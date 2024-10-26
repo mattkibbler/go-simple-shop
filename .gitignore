@@ -1,3 +1,5 @@
 /bin
 /tmp
 product_cache.json
+tailwindcss
+public/assets/css/output.css

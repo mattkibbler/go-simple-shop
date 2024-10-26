@@ -17,7 +17,10 @@ func main() {
 	templates := template.Must(template.ParseGlob("internal/templates/*.html"))
 
 	mux := http.NewServeMux()
-
+	// Serve static assets
+	staticDir := http.FileServer(http.Dir("public/assets"))
+	mux.Handle("/assets/", http.StripPrefix("/assets/", staticDir))
+	// Web routes
 	mux.HandleFunc("/", shop.HandleGetProducts(prodStore, templates))
 	mux.HandleFunc("GET /product/{id}", shop.HandleGetProduct(prodStore, templates))
 

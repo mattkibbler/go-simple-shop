@@ -23,7 +23,9 @@ func HandleGetProducts(store *Store, templates *template.Template) http.HandlerF
 
 		pageData := output.PageData{
 			Title: "Products",
-			Data:  products,
+			Data: ProductsPageData{
+				PaginatedData: *output.NewPaginatedPage(products, 5, 1),
+			},
 		}
 
 		err = output.RenderPage(templates, &buffer, "products.html", pageData)

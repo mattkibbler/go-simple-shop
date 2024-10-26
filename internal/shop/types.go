@@ -2,6 +2,8 @@ package shop
 
 import (
 	"time"
+
+	"github.com/mattkibbler/go-simple-shop/internal/output"
 )
 
 type ProductAPIResponse struct {
@@ -55,4 +57,9 @@ type Meta struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 	Barcode   string    `json:"barcode"`
 	QRCode    string    `json:"qrCode"`
+}
+
+type ProductsPageData struct {
+	PaginatedData output.PaginatedPage[Product]
+	SearchQuery   string
 }

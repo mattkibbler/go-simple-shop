@@ -6,11 +6,16 @@ all: build test
 build:
 	@echo "Building..."
 
+	@./tailwindcss -i internal/assets/input.css -o public/assets/css/output.css  -m -c internal/assets/tailwind.config.js
 	@go build -o bin/main cmd/main.go
 
 # Run the application
 run:
 	@go run cmd/main.go
+
+tailwind:
+	@if [ ! -f tailwindcss ]; then curl -sL https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-macos-x64 -o tailwindcss; fi
+	@chmod +x tailwindcss
 
 # Create DB container
 docker-run:
@@ -57,4 +62,4 @@ watch:
             fi; \
         fi
 
-.PHONY: all build run test clean watch
+.PHONY: all build run test clean watch tailwind
