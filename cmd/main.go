@@ -3,17 +3,16 @@ package main
 import (
 	"log"
 	"net/http"
-	"sync"
 	"time"
 
 	"github.com/mattkibbler/go-simple-shop/internal/shop"
 )
 
-var prodCache sync.Map
-
 func main() {
 	listenAddr := ":8080"
 	productCachePath := "product_cache.json"
+
+	prodStore := shop.NewStore()
 
 	mux := http.NewServeMux()
 
@@ -22,7 +21,7 @@ func main() {
 
 	go func() {
 		log.Println("Attempting to unserialize product cache...")
-		pCount, err := shop.UnserializeProductCache(productCachePath, &prodCache)
+		pCount, err := shop.UnserializeProductCache(productCachePath, &prodStore.Cache)
 		log.Printf("%d products unserialized\n", pCount)
 		if err != nil {
 			log.Printf("error unserializing product cache: %v\n", err)
@@ -34,11 +33,11 @@ func main() {
 		}
 		for {
 			log.Println("Fetching products...")
-			err := shop.FetchAndCacheProducts(&prodCache)
+			err := shop.FetchAndCacheProducts(&prodStore.Cache)
 			if err != nil {
 				log.Printf("error fetching products: %v\n", err)
 			}
-			err = shop.SerializeProductCache(productCachePath, &prodCache)
+			err = shop.SerializeProductCache(productCachePath, &prodStore.Cache)
 			if err != nil {
 				log.Printf("error serializing product cache: %v\n", err)
 			}
