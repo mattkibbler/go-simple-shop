@@ -1,20 +1,32 @@
 package shop
 
 import (
-	"fmt"
+	"html/template"
 	"net/http"
+
+	"github.com/mattkibbler/go-simple-shop/internal/output"
 )
 
-func HandleGetProducts(store *Store) http.HandlerFunc {
+func HandleGetProducts(store *Store, templates *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		fmt.Fprint(w, "products page...")
+		pageData := struct {
+			Title string
+		}{
+			Title: "Products",
+		}
+		output.RenderPage(templates, w, "products.html", pageData)
 	}
 }
 
-func HandleGetProduct(store *Store) http.HandlerFunc {
+func HandleGetProduct(store *Store, templates *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		fmt.Fprint(w, "single products page...")
+		pageData := struct {
+			Title string
+		}{
+			Title: "Products",
+		}
+		output.RenderPage(templates, w, "product.html", pageData)
 	}
 }

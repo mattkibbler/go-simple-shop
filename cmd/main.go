@@ -1,6 +1,7 @@
 package main
 
 import (
+	"html/template"
 	"log"
 	"net/http"
 	"time"
@@ -13,11 +14,12 @@ func main() {
 	productCachePath := "product_cache.json"
 
 	prodStore := shop.NewStore()
+	templates := template.Must(template.ParseGlob("internal/templates/*.html"))
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/", shop.HandleGetProducts)
-	mux.HandleFunc("GET /product/{id}", shop.HandleGetProduct)
+	mux.HandleFunc("/", shop.HandleGetProducts(prodStore, templates))
+	mux.HandleFunc("GET /product/{id}", shop.HandleGetProduct(prodStore, templates))
 
 	go func() {
 		log.Println("Attempting to unserialize product cache...")
