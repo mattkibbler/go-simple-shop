@@ -10,6 +10,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/mattkibbler/go-simple-shop/internal/output"
 	"github.com/mattkibbler/go-simple-shop/internal/shop"
+	"golang.org/x/text/language"
+	"golang.org/x/text/message"
 )
 
 func main() {
@@ -17,7 +19,14 @@ func main() {
 	productCachePath := "product_cache.json"
 
 	prodStore := shop.NewStore()
-	templates := template.Must(template.ParseGlob("internal/templates/*.html"))
+	templates := template.Must(template.New("").Funcs(template.FuncMap{
+		"floatToCurrency": func(value float64) string {
+			// Create a new printer for the English locale
+			printer := message.NewPrinter(language.BritishEnglish)
+			// Format the amount as USD
+			return printer.Sprintf("£%.2f", value)
+		},
+	}).ParseGlob("internal/templates/*.html"))
 
 	mux := mux.NewRouter()
 

@@ -2,6 +2,7 @@ package shop
 
 import (
 	"bytes"
+	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -39,6 +40,7 @@ func HandleGetProducts(store *Store, templates *template.Template) http.HandlerF
 
 		err = output.RenderPage(templates, &buffer, "products.html", pageData)
 		if err != nil {
+			w.WriteHeader(500)
 			output.WriteFatalError(w, err)
 		} else {
 			w.WriteHeader(200)
@@ -49,7 +51,7 @@ func HandleGetProducts(store *Store, templates *template.Template) http.HandlerF
 
 func HandleGetProduct(store *Store, templates *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(200)
+		var buffer bytes.Buffer
 		pathVars := mux.Vars(r)
 		id, err := strconv.Atoi(pathVars["id"])
 		if err != nil {
@@ -65,9 +67,21 @@ func HandleGetProduct(store *Store, templates *template.Template) http.HandlerFu
 
 		pageData := output.PageData{
 			Title: "Products",
-			Data:  product,
+			Data: struct {
+				Product Product
+			}{
+				Product: product,
+			},
 		}
 
-		output.RenderPage(templates, w, "product.html", pageData)
+		err = output.RenderPage(templates, w, "product.html", pageData)
+		fmt.Println(err)
+		if err != nil {
+			w.WriteHeader(500)
+			output.WriteFatalError(w, err)
+		} else {
+			w.WriteHeader(200)
+			buffer.WriteTo(w)
+		}
 	}
 }

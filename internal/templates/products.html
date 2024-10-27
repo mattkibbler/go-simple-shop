@@ -7,7 +7,7 @@
 						<img loading="lazy" src="{{.Thumbnail}}" alt="Tall slender porcelain bottle with natural clay textured body and cork stopper." class="h-full w-full object-cover object-center group-hover:opacity-75">
 					</div>
 					<h3 class="mt-4 text-sm text-gray-700">{{ .Title }}</h3>
-					<p class="mt-1 text-lg font-medium text-gray-900">&pound;{{ .Price}}</p>
+					<p class="mt-1 text-lg font-medium text-gray-900">{{ floatToCurrency .Price}}</p>
 				</a>
 			{{end}}
 		</div>
