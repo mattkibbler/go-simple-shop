@@ -5,13 +5,15 @@ func NewPaginatedPage[T any](data []T, perPage int, pageNum int) *PaginatedPage[
 	var from int
 	var to int
 	total := len(data)
-
 	if total == 0 {
 		results = []T{}
 	} else {
 		start := perPage * (pageNum - 1)
 		end := perPage * pageNum
 		// Make sure we don't go out of the slice bounds
+		if start > len(data) {
+			start = len(data)
+		}
 		if end > len(data) {
 			end = len(data)
 		}
