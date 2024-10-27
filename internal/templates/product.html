@@ -23,16 +23,10 @@
 				<div class="mx-auto mt-6 hidden w-full max-w-2xl sm:block lg:max-w-none">
 					<div class="grid grid-cols-4 gap-6" aria-orientation="horizontal" role="tablist">
 						{{ range $index, $image := .Data.Product.Images }}
-							{{ if gt $index 0 }} <!-- Only display images if index is greater than 0 -->
-								<button id="tabs-1-tab-1" class="relative flex h-24 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-offset-4" aria-controls="tabs-1-panel-1" role="tab" type="button">
-									<span class="sr-only">Angled view</span>
-									<span class="absolute inset-0 overflow-hidden rounded-md">
-										<img src="{{ $image }}" alt="" class="h-full w-full object-cover object-center">
-									</span>
-									<!-- Selected: "ring-indigo-500", Not Selected: "ring-transparent" -->
-									<span class="pointer-events-none absolute inset-0 rounded-md ring-2 ring-transparent ring-offset-2" aria-hidden="true"></span>
-								</button>
-							{{ end }}
+							<button data-image-switcher class="relative border-2 border-transparent flex h-24 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-offset-4" role="tab" type="button">
+								<img src="{{ $image }}" alt="" class="h-full w-full object-cover object-center">
+								<span data-indicator="{{ if eq $index 0 }}active{{end}}" class="pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2 {{ if eq $index 0 }}ring-indigo-500{{else}}ring-transparent{{end}}" aria-hidden="true"></span>
+							</button>
 						{{ end }}
 					</div>
 				</div>
@@ -40,11 +34,32 @@
 				<div class="aspect-square w-full">
 					<!-- Tab panel, show/hide based on tab state. -->
 					{{ if index .Data.Product.Images 0 }}
-						<img src="{{ index .Data.Product.Images 0 }}" class="h-full w-full object-cover object-center sm:rounded-lg" />
+						<img id="main-image" src="{{ index .Data.Product.Images 0 }}" class="h-full w-full object-cover object-center sm:rounded-lg" />
 					{{ end }}
 					<!-- More images... -->
 				</div>
 			</div>
+
+			<script>
+			Array.from(document.querySelectorAll('[data-image-switcher]')).forEach(function(el){
+				el.addEventListener('click', function(){
+					var img = el.querySelector('img');
+					var indicator = el.querySelector('[data-indicator]');
+					var oldIndicator = document.querySelector('[data-indicator="active"]');
+
+					oldIndicator.dataset.indicator = "";
+					oldIndicator.classList.remove('ring-indigo-500');
+					oldIndicator.classList.add('ring-transparent');
+					indicator.classList.remove('ring-transparent');
+					indicator.classList.add('ring-indigo-500');
+					indicator.dataset.indicator = "active";
+
+					document.getElementById('main-image').src = '';
+					document.getElementById('main-image').src = img.src;
+				});
+			});
+			</script>
+
 			<!-- Product info -->
 			<div class="mt-10 px-4 sm:mt-16 sm:px-0 lg:mt-0">
 				<h1 class="text-3xl font-bold tracking-tight text-gray-900">{{.Data.Product.Title}}</h1>
