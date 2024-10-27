@@ -28,3 +28,27 @@ func RenderPage(templates *template.Template, w io.Writer, template string, page
 	}
 	return nil
 }
+
+func WriteErrorPage(templates *template.Template, w io.Writer, errorToShow error) error {
+	pageData := PageData{
+		Title: "An error occurred",
+		Data:  errorToShow,
+	}
+
+	// Write header to output
+	err := templates.ExecuteTemplate(w, "header.html", pageData)
+	if err != nil {
+		return err
+	}
+	// Write content template to output
+	err = templates.ExecuteTemplate(w, "error.html", pageData)
+	if err != nil {
+		return err
+	}
+	// Write footer template to output
+	err = templates.ExecuteTemplate(w, "footer.html", pageData)
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -1,6 +1,7 @@
 package shop
 
 import (
+	"fmt"
 	"sort"
 	"sync"
 )
@@ -55,4 +56,18 @@ func (s *Store) QueryProducts(filterFunc func(p Product) bool, sortFunc func(i P
 	}
 
 	return result, nil
+}
+
+func (s *Store) GetProduct(id int) (Product, error) {
+	key := fmt.Sprintf("product-%d", id)
+	val, ok := s.Cache.Load(key)
+	if !ok {
+		return Product{}, fmt.Errorf("No product found")
+	}
+	product, ok := val.(Product)
+	if !ok {
+		return Product{}, fmt.Errorf("No product found")
+	}
+	return product, nil
+
 }

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/mattkibbler/go-simple-shop/internal/output"
 )
 
@@ -49,9 +50,17 @@ func HandleGetProducts(store *Store, templates *template.Template) http.HandlerF
 func HandleGetProduct(store *Store, templates *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
+		pathVars := mux.Vars(r)
+		id, err := strconv.Atoi(pathVars["id"])
+		if err != nil {
+			output.WriteFatalError(w, err)
+			return
+		}
 
-		product := Product{
-			Title: "Dummy product",
+		product, err := store.GetProduct(id)
+		if err != nil {
+			output.WriteErrorPage(templates, w, err)
+			return
 		}
 
 		pageData := output.PageData{

@@ -1,11 +1,14 @@
 package main
 
 import (
+	"errors"
 	"html/template"
 	"log"
 	"net/http"
 	"time"
 
+	"github.com/gorilla/mux"
+	"github.com/mattkibbler/go-simple-shop/internal/output"
 	"github.com/mattkibbler/go-simple-shop/internal/shop"
 )
 
@@ -16,13 +19,18 @@ func main() {
 	prodStore := shop.NewStore()
 	templates := template.Must(template.ParseGlob("internal/templates/*.html"))
 
-	mux := http.NewServeMux()
+	mux := mux.NewRouter()
+
 	// Serve static assets
 	staticDir := http.FileServer(http.Dir("public/assets"))
-	mux.Handle("/assets/", http.StripPrefix("/assets/", staticDir))
+	mux.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", staticDir))
 	// Web routes
-	mux.HandleFunc("/", shop.HandleGetProducts(prodStore, templates))
-	mux.HandleFunc("GET /product/{id}", shop.HandleGetProduct(prodStore, templates))
+	mux.HandleFunc("/", shop.HandleGetProducts(prodStore, templates)).Methods("GET")
+	mux.HandleFunc("/product/{id}", shop.HandleGetProduct(prodStore, templates)).Methods("GET")
+	// Handle 404s with custom page
+	mux.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		output.WriteErrorPage(templates, w, errors.New("page not found"))
+	})
 
 	go func() {
 		log.Println("Attempting to unserialize product cache...")
