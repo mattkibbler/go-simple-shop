@@ -45,7 +45,7 @@ type Dimensions struct {
 }
 
 type Review struct {
-	Rating        int       `json:"rating"`
+	Rating        float64   `json:"rating"`
 	Comment       string    `json:"comment"`
 	Date          time.Time `json:"date"`
 	ReviewerName  string    `json:"reviewerName"`

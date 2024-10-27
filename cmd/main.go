@@ -41,6 +41,9 @@ func main() {
 			}
 			return result
 		},
+		"formatDate": func(t time.Time) string {
+			return t.Format("January 2, 2006")
+		},
 	}).ParseGlob("internal/templates/*.html"))
 
 	mux := mux.NewRouter()
