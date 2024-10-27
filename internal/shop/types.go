@@ -62,4 +62,5 @@ type Meta struct {
 type ProductsPageData struct {
 	PaginatedData output.PaginatedPage[Product]
 	SearchQuery   string
+	SortQuery     string
 }

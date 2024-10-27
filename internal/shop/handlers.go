@@ -24,6 +24,10 @@ func HandleGetProducts(store *Store, templates *template.Template) http.HandlerF
 			page = 1
 		}
 		searchQuery := queryParams.Get("search")
+		sortQuery := queryParams.Get("sort")
+		if sortQuery == "" {
+			sortQuery = "name-asc"
+		}
 
 		products, err := store.QueryProducts(func(p Product) bool {
 			if searchQuery != "" {
@@ -31,7 +35,16 @@ func HandleGetProducts(store *Store, templates *template.Template) http.HandlerF
 			}
 			return true
 		}, func(i Product, j Product) bool {
-			return i.Title < j.Title
+			switch sortQuery {
+			case "name-desc":
+				return i.Title > j.Title
+			case "price-asc":
+				return i.Price < j.Price
+			case "price-desc":
+				return i.Price > j.Price
+			default:
+				return i.Title < j.Title
+			}
 		})
 		if err != nil {
 			return
@@ -42,6 +55,7 @@ func HandleGetProducts(store *Store, templates *template.Template) http.HandlerF
 			Data: ProductsPageData{
 				PaginatedData: *output.NewPaginatedPage(products, 12, page),
 				SearchQuery:   searchQuery,
+				SortQuery:     sortQuery,
 			},
 		}
 
