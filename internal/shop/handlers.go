@@ -41,6 +41,7 @@ func HandleGetProducts(store *Store, templates *template.Template) http.HandlerF
 			Title: "Products",
 			Data: ProductsPageData{
 				PaginatedData: *output.NewPaginatedPage(products, 12, page),
+				SearchQuery:   searchQuery,
 			},
 		}
 
