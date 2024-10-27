@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/mattkibbler/go-simple-shop/internal/output"
@@ -15,14 +16,19 @@ func HandleGetProducts(store *Store, templates *template.Template) http.HandlerF
 	return func(w http.ResponseWriter, r *http.Request) {
 		var buffer bytes.Buffer
 
+		// All query params
 		queryParams := r.URL.Query()
-		pageStr := queryParams.Get("page") // Returns the first value for the key "name"
+		pageStr := queryParams.Get("page")
 		page, _ := strconv.Atoi(pageStr)
 		if page == 0 {
 			page = 1
 		}
+		searchQuery := queryParams.Get("search")
 
 		products, err := store.QueryProducts(func(p Product) bool {
+			if searchQuery != "" {
+				return strings.Contains(strings.ToLower(p.Title), strings.ToLower(searchQuery))
+			}
 			return true
 		}, func(i Product, j Product) bool {
 			return i.Title < j.Title

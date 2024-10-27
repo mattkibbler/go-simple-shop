@@ -1,5 +1,15 @@
 <div class="bg-white">
 	<div class="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:max-w-7xl lg:px-8">
+
+		<form action="/" method="GET">
+			<div>
+				<div class="flex space-x-2">
+					<input type="search" required name="search" value="{{ .Data.SearchQuery }}" placeholder="Search..." class="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+					<button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Search</button>
+				</div>
+			</div>
+		</form>
+
 		<div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
 			{{ range .Data.PaginatedData.Results }}
 				<a href="/product/{{.ID}}" class="group">
