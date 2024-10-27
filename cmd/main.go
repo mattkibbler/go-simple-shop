@@ -4,6 +4,7 @@ import (
 	"errors"
 	"html/template"
 	"log"
+	"math"
 	"net/http"
 	"time"
 
@@ -25,6 +26,20 @@ func main() {
 			printer := message.NewPrinter(language.BritishEnglish)
 			// Format the amount as USD
 			return printer.Sprintf("£%.2f", value)
+		},
+		"ratingStars": func(value float64) []bool {
+			// Round down rating to display stars...
+			// A "4.51" rated product should probably be given 4 stars not 5
+			rounded := int(math.Floor(value))
+			var result []bool
+			for i := 1; i <= 5; i++ {
+				if i <= rounded {
+					result = append(result, true)
+				} else {
+					result = append(result, false)
+				}
+			}
+			return result
 		},
 	}).ParseGlob("internal/templates/*.html"))
 
