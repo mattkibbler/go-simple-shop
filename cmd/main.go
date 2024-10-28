@@ -2,6 +2,8 @@ package main
 
 import (
 	"errors"
+	"flag"
+	"fmt"
 	"html/template"
 	"log"
 	"math"
@@ -16,7 +18,10 @@ import (
 )
 
 func main() {
-	listenAddr := ":8080"
+	port := flag.String("port", "8080", "Port to run the application on")
+	// Parse flags
+	flag.Parse()
+	listenAddr := fmt.Sprintf(":%v", *port)
 	productCachePath := "product_cache.json"
 
 	prodStore := shop.NewStore()
