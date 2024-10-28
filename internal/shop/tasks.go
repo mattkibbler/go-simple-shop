@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func FetchAndCacheProducts(productCache *sync.Map) error {
+func FetchAndCacheProducts(productCache *sync.Map) (int, error) {
 	prodLimit := 30
 	totalProducts := 999 // Set initial high value
 	fetchedProducts := 0
@@ -18,12 +18,12 @@ func FetchAndCacheProducts(productCache *sync.Map) error {
 		fmt.Println(url)
 		resp, err := http.Get(url)
 		if err != nil {
-			return err
+			return 0, err
 		}
 
 		var productsResponse ProductAPIResponse
 		if err := json.NewDecoder(resp.Body).Decode(&productsResponse); err != nil {
-			return fmt.Errorf("could not decode product JSON: %v", err)
+			return 0, fmt.Errorf("could not decode product JSON: %v", err)
 		}
 
 		for _, product := range productsResponse.Products {
@@ -40,7 +40,7 @@ func FetchAndCacheProducts(productCache *sync.Map) error {
 		time.Sleep(time.Second)
 	}
 
-	return nil
+	return fetchedProducts, nil
 }
 
 func SerializeProductCache(filePath string, productCache *sync.Map) error {

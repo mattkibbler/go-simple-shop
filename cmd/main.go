@@ -65,6 +65,7 @@ func main() {
 	})
 
 	go func() {
+		sleepDuration := 1 * time.Minute
 		log.Println("Attempting to unserialize product cache...")
 		pCount, err := shop.UnserializeProductCache(productCachePath, &prodStore.Cache)
 		log.Printf("%d products unserialized\n", pCount)
@@ -74,21 +75,22 @@ func main() {
 		// If we unserialized some products, we don't need to fetch them from the API straight away
 		// This is mainly so we're not hitting the API every time we stop/start the server during development
 		if pCount > 0 {
-			time.Sleep(10 * time.Minute)
+			time.Sleep(sleepDuration)
 		}
 		for {
 			log.Println("Fetching products...")
-			err := shop.FetchAndCacheProducts(&prodStore.Cache)
+			fetchedCount, err := shop.FetchAndCacheProducts(&prodStore.Cache)
 			if err != nil {
 				log.Printf("error fetching products: %v\n", err)
 			}
+			log.Printf("Fetched %v products", fetchedCount)
+			log.Println("Serializing products...")
 			err = shop.SerializeProductCache(productCachePath, &prodStore.Cache)
 			if err != nil {
 				log.Printf("error serializing product cache: %v\n", err)
 			}
-
 			// Schedule product refresh after a delay
-			time.Sleep(10 * time.Minute)
+			time.Sleep(sleepDuration)
 		}
 	}()
 
