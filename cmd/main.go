@@ -65,7 +65,7 @@ func main() {
 	})
 
 	go func() {
-		sleepDuration := 1 * time.Minute
+		sleepDuration := 10 * time.Minute
 		log.Println("Attempting to unserialize product cache...")
 		pCount, err := shop.UnserializeProductCache(productCachePath, &prodStore.Cache)
 		log.Printf("%d products unserialized\n", pCount)
