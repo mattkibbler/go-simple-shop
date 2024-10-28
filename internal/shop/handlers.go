@@ -2,7 +2,6 @@ package shop
 
 import (
 	"bytes"
-	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -96,7 +95,6 @@ func HandleGetProduct(store *Store, templates *template.Template) http.HandlerFu
 		}
 
 		err = output.RenderPage(templates, w, "product.html", pageData)
-		fmt.Println(err)
 		if err != nil {
 			w.WriteHeader(500)
 			output.WriteFatalError(w, err)
