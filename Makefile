@@ -1,8 +1,5 @@
 # Simple Makefile for a Go project
 
-# Build the application
-all: build test
-
 build:
 	@echo "Building..."
 
@@ -19,11 +16,11 @@ tailwind:
 
 # Create DB container
 docker-run:
-	@if docker compose up --build 2>/dev/null; then \
+	@if docker compose up -d --build 2>/dev/null; then \
 		: ; \
 	else \
 		echo "Falling back to Docker Compose V1"; \
-		docker-compose up --build; \
+		docker-compose up -d --build; \
 	fi
 
 # Shutdown DB container
@@ -34,16 +31,6 @@ docker-down:
 		echo "Falling back to Docker Compose V1"; \
 		docker-compose down; \
 	fi
-
-# Test the application
-test:
-	@echo "Testing..."
-	@go test ./... -v
-
-# Clean the binary
-clean:
-	@echo "Cleaning..."
-	@rm -f main
 
 # Live Reload
 watch:
@@ -62,4 +49,4 @@ watch:
             fi; \
         fi
 
-.PHONY: all build run test clean watch tailwind
+.PHONY: build run watch tailwind
