@@ -94,7 +94,7 @@ func HandleGetProduct(store *Store, templates *template.Template) http.HandlerFu
 			},
 		}
 
-		err = output.RenderPage(templates, w, "product.html", pageData)
+		err = output.RenderPage(templates, &buffer, "product.html", pageData)
 		if err != nil {
 			w.WriteHeader(500)
 			output.WriteFatalError(w, err)
